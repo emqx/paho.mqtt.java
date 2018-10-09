@@ -387,7 +387,6 @@ public class EMQMqttV5Receiver implements MqttCallback {
 //    log.exiting(className, methodName);
 //  }
 
-  @Override
   public void deliveryComplete(IMqttDeliveryToken token) {
     // Auto-generated method stub
   }
@@ -397,7 +396,6 @@ public class EMQMqttV5Receiver implements MqttCallback {
 //    // Auto-generated method stub
 //  }
 
-  @Override
   public synchronized void messageArrived(String topic, MqttMessage message) throws Exception {
     final String methodName = "messageArrived";
     log.entering(className, methodName, new Object[]{topic,
@@ -424,25 +422,21 @@ public class EMQMqttV5Receiver implements MqttCallback {
 //  		return receivedMessages.size();
 //  	}
 
-	@Override
 	public void disconnected(MqttDisconnectResponse disconnectResponse) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void mqttErrorOccurred(MqttException exception) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void connectComplete(boolean reconnect, String serverURI) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void authPacketArrived(int reasonCode, MqttProperties properties) {
 		// TODO Auto-generated method stub
 		
