@@ -50,12 +50,25 @@ public class MqttTopicValidator {
 	 *             if the topic is invalid
 	 */
 	public static void validate(String topicString, boolean wildcardAllowed, boolean sharedSubAllowed)
+		throws IllegalArgumentException {
+		validate(topicString, wildcardAllowed, sharedSubAllowed, null);
+	}
+	
+	
+	public static void validate(String topicString, boolean wildcardAllowed, boolean sharedSubAllowed,
+			Integer topicAlias)
 			throws IllegalArgumentException {
 		int topicLen = 0;
-		try {
-			topicLen = topicString.getBytes("UTF-8").length;
-		} catch (UnsupportedEncodingException e) {
-			throw new IllegalStateException(e.getMessage());
+		if (topicString == null || topicString.length() == 0) {
+			if (topicAlias != null && topicAlias > 0) {
+				return;
+			}
+		} else {
+			try {
+				topicLen = topicString.getBytes("UTF-8").length;
+			} catch (UnsupportedEncodingException e) {
+				throw new IllegalStateException(e.getMessage());
+			}
 		}
 
 		// Spec: length check

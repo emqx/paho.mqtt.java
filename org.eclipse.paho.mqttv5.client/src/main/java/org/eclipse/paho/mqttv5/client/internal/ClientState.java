@@ -513,17 +513,12 @@ public class ClientState implements MqttState {
 		}
 		// Set Topic Alias if required
 		if (message instanceof MqttPublish && this.mqttConnection.getOutgoingTopicAliasMaximum() > 0) {
-			String topic = ((MqttPublish) message).getTopicName();
-			if (outgoingTopicAliases.containsKey(topic)) {
-				// Existing Topic Alias, Assign it and remove the topic string
-				((MqttPublish) message).getProperties().setTopicAlias(outgoingTopicAliases.get(topic));
-				((MqttPublish) message).setTopicName(null);
-			} else {
-				int nextOutgoingTopicAlias = this.mqttConnection.getNextOutgoingTopicAlias();
-				if (nextOutgoingTopicAlias <= this.mqttConnection.getOutgoingTopicAliasMaximum()) {
-					// Create a new Topic Alias and increment the counter
-					((MqttPublish) message).getProperties().setTopicAlias(nextOutgoingTopicAlias);
-					outgoingTopicAliases.put(((MqttPublish) message).getTopicName(), nextOutgoingTopicAlias);
+			MqttPublish pubMsg = (MqttPublish) message;
+			String topic = pubMsg.getTopicName();
+			if (pubMsg.getProperties() != null) {
+				Integer topicAlias = pubMsg.getProperties().getTopicAlias();
+				if (topicAlias != null && topicAlias > 0 && topicAlias < this.mqttConnection.getOutgoingTopicAliasMaximum()) {
+					outgoingTopicAliases.put(topic, topicAlias);
 				}
 			}
 		}

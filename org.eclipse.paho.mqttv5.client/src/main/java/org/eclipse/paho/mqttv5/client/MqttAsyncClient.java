@@ -1459,7 +1459,8 @@ public class MqttAsyncClient implements MqttClientInterface, IMqttAsyncClient {
 		log.fine(CLASS_NAME, methodName, "111", new Object[] { topic, userContext, callback });
 
 		// Checks if a topic is valid when publishing a message.
-		MqttTopicValidator.validate(topic, false/* wildcards NOT allowed */, true);
+		Integer topicAlias = (message.getProperties() == null ? null : message.getProperties().getTopicAlias());
+		MqttTopicValidator.validate(topic, false/* wildcards NOT allowed */, true, topicAlias);
 
 		MqttDeliveryToken token = new MqttDeliveryToken(getClientId());
 		token.setActionCallback(callback);
