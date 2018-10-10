@@ -256,5 +256,46 @@ public class TopicAliasTest {
 		
 		TestClientUtilities.disconnectAndCloseClient(asyncClient, 5000);
 	}
+	
+	@Test
+	public void testTopicAliasMaximum() throws MqttException, InterruptedException {
+		String clientId = Utility.getMethodName();
+		int timeout = 120 * 1000;
+		
+		LoggingUtilities.banner(log, SubscribeTests.class, clientId);
+		String topic = TestHelper.getTopicPrefix() + clientId;
+		
+		EMQMqttV5Receiver mqttV5Receiver = new EMQMqttV5Receiver(clientId, LoggingUtilities.getPrintStream());
+		//without setting topic alias maximum for receiver, broker will not send to subscriber.
+		MqttAsyncClient asyncClient = TestClientUtilities.connectAndGetClient(TestHelper.getServerURI().toString(), clientId,
+				mqttV5Receiver, null, timeout);
+		
+		for (int qos = 0; qos <= 2; qos++) {
+			int topicAlias = qos + 1;
+			MqttProperties properties = new MqttProperties();
+			properties.setTopicAlias(topicAlias);
+			
+			// Subscribe to a topic
+			log.info(MessageFormat.format("Subscribing to topic: {0} at QoS {1}", topic, qos));
+			MqttSubscription subscription = new MqttSubscription(topic, qos);
+			IMqttToken subscribeToken = asyncClient.subscribe(subscription);
+			subscribeToken.waitForCompletion(timeout);
+			
+			// Publish a message to the topic and set up the topic alias
+			String messagePayload = "Test Payload at QoS : " + qos;
+			MqttMessage testMessage = new MqttMessage(messagePayload.getBytes(), qos, false, properties);
+			log.info(MessageFormat.format("Publishing Message {0} to: {1} at QoS: {2} with topic alias {3}", 
+					testMessage.toDebugString(), topic, qos, topicAlias));
+			IMqttDeliveryToken deliveryToken = asyncClient.publish(topic, testMessage);
+			deliveryToken.waitForCompletion(timeout);
+
+			log.info("Waiting for delivery and validating message.");
+			boolean received = mqttV5Receiver.validateReceipt(topic, qos, testMessage, 10);
+			Assert.assertFalse(received);
+			log.info(MessageFormat.format("No message received at topic {0}.", topic));
+		}
+		
+		TestClientUtilities.disconnectAndCloseClient(asyncClient, 5000);
+	}
 
 }
