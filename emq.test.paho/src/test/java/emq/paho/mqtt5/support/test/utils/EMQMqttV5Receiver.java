@@ -86,9 +86,13 @@ public class EMQMqttV5Receiver implements MqttCallback {
     final String methodName = "receiveNext";
     log.entering(className, methodName);
 
+    long waitInterval = 1000;	//1 second
+    
     ReceivedMessage receivedMessage = null;
-    if (receivedMessages.isEmpty()) {
-      wait(waitMilliseconds);
+    long remainingWaiting = waitMilliseconds;
+    while (receivedMessages.isEmpty() && remainingWaiting > 0 && connected) {
+    		wait(waitInterval);
+    		remainingWaiting -= waitInterval;
     }
     if (!receivedMessages.isEmpty()) {
       receivedMessage = receivedMessages.remove(0);
@@ -423,12 +427,12 @@ public class EMQMqttV5Receiver implements MqttCallback {
 //  	}
 
 	public void disconnected(MqttDisconnectResponse disconnectResponse) {
-		// TODO Auto-generated method stub
-		
+		this.connected = false;
+		report("Disconnected with reason code " + disconnectResponse.getReturnCode());
 	}
 
 	public void mqttErrorOccurred(MqttException exception) {
-		// TODO Auto-generated method stub
+		report("MQTT error occurred: " + exception.getReasonCode());
 		
 	}
 
@@ -440,5 +444,9 @@ public class EMQMqttV5Receiver implements MqttCallback {
 	public void authPacketArrived(int reasonCode, MqttProperties properties) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	public boolean isConnected() {
+		return connected;
 	}
 }

@@ -12,11 +12,16 @@ public class ConnPropertiesUtil {
 		return mqttConn.getKeepAlive();
 	}
 	
+	public static int getTopicAliasMaximum(MqttAsyncClient asyncClient) throws Exception {
+		MqttConnectionState mqttConn = getMqttConnFromClient(asyncClient);
+		return mqttConn.getOutgoingTopicAliasMaximum();
+	}
+	
 	public static MqttConnectionState getMqttConnFromClient(MqttAsyncClient asyncClient) throws Exception {
 		Field field = asyncClient.getClass().getDeclaredField("mqttConnection");
 		field.setAccessible(true);
 		MqttConnectionState mqttConn = (MqttConnectionState) field.get(asyncClient);
 		return mqttConn;
 	}
-
+	
 }
