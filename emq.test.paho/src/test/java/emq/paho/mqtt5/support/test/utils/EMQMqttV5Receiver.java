@@ -115,56 +115,81 @@ public class EMQMqttV5Receiver implements MqttCallback {
   }
   
   public boolean validateReceipt(String sendTopic, int expectedQos, MqttMessage message, int timeout) throws MqttException, InterruptedException {
-	  return validateReceipt(sendTopic, expectedQos, message.getPayload(), timeout);
+	  ReceivedMessage receivedMessage = getReceipt(sendTopic, expectedQos, message, timeout);
+	  return (receivedMessage != null);
   }
   
-  
-  /**
-   * @param sendTopic
-   * @param expectedQos
-   * @param sentBytes
-   * @return flag
-   * @throws MqttException
-   * @throws InterruptedException
-   */
-  public boolean validateReceipt(String sendTopic, int expectedQos, byte[] sentBytes, int timeout) throws MqttException, InterruptedException {
-    final String methodName = "validateReceipt";
-    log.entering(className, methodName, new Object[]{sendTopic, expectedQos});
-
-    long waitMilliseconds = timeout * 1000;
-    ReceivedMessage receivedMessage = receiveNext(waitMilliseconds);
-    if (receivedMessage == null) {
-      report(" No message received in waitMilliseconds=" + waitMilliseconds);
-      log.exiting(className, methodName, "Return false: " + receivedMessage);
-      return false;
-    }
-
-    if (!sendTopic.equals(receivedMessage.topic)) {
-      report(" Received invalid topic sent=" + sendTopic + " received topic=" + receivedMessage.topic);
-      log.exiting(className, methodName, "Return false: " + receivedMessage);
-      return false;
-    }
-
-    if (!java.util.Arrays.equals(sentBytes,
-        receivedMessage.message.getPayload())) {
-      report("Received invalid payload="
-             + Arrays.toString(receivedMessage.message.getPayload()) + "\n" + "Sent:"
-             + new String(sentBytes) + "\n" + "Received:"
-             + new String(receivedMessage.message.getPayload()));
-      log.exiting(className, methodName, "Return false: " + receivedMessage);
-      return false;
-    }
-
-    if (expectedQos != receivedMessage.message.getQos()) {
-      report("expectedQos=" + expectedQos + " != Received Qos="
-             + receivedMessage.message.getQos());
-      log.exiting(className, methodName, "Return false: " + receivedMessage);
-      return false;
-    }
-
-    log.exiting(className, methodName, new Object[]{"true"});
-    return true;
+  private boolean topicMatch(String subTopic, String actualTopic) {
+	  if (subTopic.equals(actualTopic)) {
+		  return true;
+	  }
+	  else if (subTopic.contains("+")) {
+		  String prefix = subTopic.substring(0, subTopic.indexOf("+"));
+		  String surfix = subTopic.substring(subTopic.indexOf("+") + 1);
+		  if (actualTopic.startsWith(prefix)) {
+			  int start = prefix.length();
+			  String str = actualTopic.substring(start);
+			  if (surfix.length() > 0) {
+				  int end = str.lastIndexOf(surfix);
+				  if (end <= 0) {
+					  return false;
+				  }
+				  str = str.substring(0, end);
+			  }
+			  if (! str.contains("/")) {
+				  return true;
+			  }
+			  return false;
+			  
+		  }
+	  } else if (subTopic.endsWith("#")) {
+		  if (actualTopic.length() > 0 && actualTopic.startsWith(subTopic.substring(0, subTopic.length() - 1))) {
+			  return true;
+		  }
+		  return false;
+	  }
+	  return false;
   }
+  
+  public ReceivedMessage getReceipt(String sendTopic, int expectedQos, MqttMessage message, int timeout) throws MqttException, InterruptedException {
+	    final String methodName = "validateReceipt";
+	    log.entering(className, methodName, new Object[]{sendTopic, expectedQos});
+
+	    long waitMilliseconds = timeout * 1000;
+	    ReceivedMessage receivedMessage = receiveNext(waitMilliseconds);
+	    if (receivedMessage == null) {
+	      report(" No message received in waitMilliseconds=" + waitMilliseconds);
+	      log.exiting(className, methodName, "Return false: " + receivedMessage);
+	      return null;
+	    }
+
+	    if (!topicMatch(sendTopic, receivedMessage.topic)) {
+	      report(" Received invalid topic sent=" + sendTopic + " received topic=" + receivedMessage.topic);
+	      log.exiting(className, methodName, "Return false: " + receivedMessage);
+	      return null;
+	    }
+
+	    byte[] sentBytes = message.getPayload();
+	    if (!java.util.Arrays.equals(sentBytes,
+	        receivedMessage.message.getPayload())) {
+	      report("Received invalid payload="
+	             + Arrays.toString(receivedMessage.message.getPayload()) + "\n" + "Sent:"
+	             + new String(sentBytes) + "\n" + "Received:"
+	             + new String(receivedMessage.message.getPayload()));
+	      log.exiting(className, methodName, "Return false: " + receivedMessage);
+	      return null;
+	    }
+
+	    if (expectedQos != receivedMessage.message.getQos()) {
+	      report("expectedQos=" + expectedQos + " != Received Qos="
+	             + receivedMessage.message.getQos());
+	      log.exiting(className, methodName, "Return false: " + receivedMessage);
+	      return null;
+	    }
+
+	    log.exiting(className, methodName, new Object[]{"true"});
+	    return receivedMessage;
+	  }
 
   /**
    * Validate receipt of a batch of messages sent to a topic by a number of

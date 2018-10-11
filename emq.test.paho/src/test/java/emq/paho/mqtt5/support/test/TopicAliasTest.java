@@ -85,6 +85,11 @@ public class TopicAliasTest {
 			log.info("Waiting for delivery and validating message.");
 			received = mqttV5Receiver.validateReceipt(topic, qos, testMessage, 30);
 			Assert.assertTrue(received);
+			
+			// Unsubscribe from the topic
+			log.info("Unsubscribing from : " + topic);
+			IMqttToken unsubscribeToken = asyncClient.unsubscribe(topic);
+			unsubscribeToken.waitForCompletion(timeout);
 		}
 		
 		TestClientUtilities.disconnectAndCloseClient(asyncClient, 5000);
@@ -161,6 +166,15 @@ public class TopicAliasTest {
 			received = mqttV5Receiver.validateReceipt(topic, qos, testMessage, 10);
 			Assert.assertFalse(received);
 			log.info(MessageFormat.format("No message received at topic {0} using topic alias.", topic));
+			
+			// Unsubscribe from the topic
+			log.info("Unsubscribing from : " + topic);
+			IMqttToken unsubscribeToken = asyncClient.unsubscribe(topic);
+			unsubscribeToken.waitForCompletion(timeout);
+			
+			log.info("Unsubscribing from : " + newTopic);
+			unsubscribeToken = asyncClient.unsubscribe(newTopic);
+			unsubscribeToken.waitForCompletion(timeout);
 		}
 		
 		TestClientUtilities.disconnectAndCloseClient(asyncClient, 5000);
@@ -206,6 +220,11 @@ public class TopicAliasTest {
 					boolean received = mqttV5Receiver.validateReceipt(topic, qos, testMessage, 10);
 					Assert.assertFalse(received);
 					log.info(MessageFormat.format("No message received at topic {0}.", topic));
+					
+					// Unsubscribe from the topic
+					log.info("Unsubscribing from : " + topic);
+					IMqttToken unsubscribeToken = asyncClient.unsubscribe(topic);
+					unsubscribeToken.waitForCompletion(timeout);
 					
 					if (!mqttV5Receiver.isConnected()) {
 						//reconnect
@@ -293,6 +312,11 @@ public class TopicAliasTest {
 			boolean received = mqttV5Receiver.validateReceipt(topic, qos, testMessage, 10);
 			Assert.assertFalse(received);
 			log.info(MessageFormat.format("No message received at topic {0}.", topic));
+			
+			// Unsubscribe from the topic
+			log.info("Unsubscribing from : " + topic);
+			IMqttToken unsubscribeToken = asyncClient.unsubscribe(topic);
+			unsubscribeToken.waitForCompletion(timeout);
 		}
 		
 		TestClientUtilities.disconnectAndCloseClient(asyncClient, 5000);
