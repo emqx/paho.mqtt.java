@@ -47,8 +47,8 @@ public class MqttDisconnect extends MqttWireMessage {
 			MqttReturnCode.RETURN_CODE_WILDCARD_SUB_NOT_SUPPORTED };
 
 	// Fields
-	private int returnCode = MqttReturnCode.RETURN_CODE_SUCCESS;
-	
+//	private int returnCode = MqttReturnCode.RETURN_CODE_SUCCESS;
+
 	private static final Byte[] validProperties = { MqttProperties.SESSION_EXPIRY_INTERVAL_IDENTIFIER,
 			MqttProperties.SERVER_REFERENCE_IDENTIFIER, MqttProperties.REASON_STRING_IDENTIFIER,
 			MqttProperties.USER_DEFINED_PAIR_IDENTIFIER };
@@ -57,13 +57,14 @@ public class MqttDisconnect extends MqttWireMessage {
 
 	public MqttDisconnect(byte[] data) throws IOException, MqttException {
 		super(MqttWireMessage.MESSAGE_TYPE_DISCONNECT);
+		this.reasonCode = MqttReturnCode.RETURN_CODE_SUCCESS;
 		this.properties = new MqttProperties(validProperties);
 		ByteArrayInputStream bais = new ByteArrayInputStream(data);
 		CountingInputStream counter = new CountingInputStream(bais);
 		DataInputStream inputStream = new DataInputStream(counter);
 		if(data.length - counter.getCounter() >= 1) {
-			returnCode = inputStream.readUnsignedByte();
-			validateReturnCode(returnCode, validReturnCodes);
+			this.reasonCode = inputStream.readUnsignedByte();
+			validateReturnCode(this.reasonCode, validReturnCodes);
 		}
 		
 		long remainder = (long) data.length - counter.getCounter();
@@ -77,7 +78,7 @@ public class MqttDisconnect extends MqttWireMessage {
 	public MqttDisconnect(int returnCode, MqttProperties properties) throws MqttException {
 		super(MqttWireMessage.MESSAGE_TYPE_DISCONNECT);
 		validateReturnCode(returnCode, validReturnCodes);
-		this.returnCode = returnCode;
+		this.reasonCode = returnCode;
 		if (properties != null) {
 			this.properties = properties;
 		} else {
@@ -93,7 +94,7 @@ public class MqttDisconnect extends MqttWireMessage {
 			DataOutputStream outputStream = new DataOutputStream(baos);
 
 			// Encode the Return Code
-			outputStream.writeByte(returnCode);
+			outputStream.writeByte(this.reasonCode);
 
 			// Write Identifier / Value Fields
 			byte[] identifierValueFieldsByteArray = this.properties.encodeProperties();
@@ -108,7 +109,7 @@ public class MqttDisconnect extends MqttWireMessage {
 	}
 	
 	public int getReturnCode() {
-		return returnCode;
+		return this.reasonCode;
 	}
 	
 	@Override
@@ -123,7 +124,7 @@ public class MqttDisconnect extends MqttWireMessage {
 
 	@Override
 	public String toString() {
-		return "MqttDisconnect [returnCode=" + returnCode + ", properties=" + properties + "]";
+		return "MqttDisconnect [returnCode=" + this.reasonCode + ", properties=" + properties + "]";
 	}
 
 }

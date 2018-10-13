@@ -25,6 +25,7 @@ import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
 import org.eclipse.paho.mqttv5.common.packet.MqttAck;
 import org.eclipse.paho.mqttv5.common.packet.MqttConnAck;
+import org.eclipse.paho.mqttv5.common.packet.MqttDisconnect;
 import org.eclipse.paho.mqttv5.common.packet.MqttPubAck;
 import org.eclipse.paho.mqttv5.common.packet.MqttPubComp;
 import org.eclipse.paho.mqttv5.common.packet.MqttPubRec;
@@ -239,7 +240,8 @@ public class Token {
 
 			// If reason codes are available, store them here.
 			if (msg instanceof MqttPubAck || msg instanceof MqttPubComp || msg instanceof MqttPubRec
-					|| msg instanceof MqttPubRel || msg instanceof MqttSubAck || msg instanceof MqttUnsubAck) {
+					|| msg instanceof MqttPubRel || msg instanceof MqttSubAck || msg instanceof MqttUnsubAck
+					|| msg instanceof MqttDisconnect) {
 				if (msg.getReasonCodes() != null) {
 					updateReasonCodes(msg.getReasonCodes());
 				}

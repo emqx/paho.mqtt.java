@@ -614,10 +614,12 @@ public class ClientComms {
 			clientState.quiesce(quiesceTimeout);
 		}
 		MqttToken token = new MqttToken(client.getClientId());
+		MqttDisconnect disconnect = null;
 		try {
 			// Send disconnect packet
 			if (sendDisconnectPacket) {
-				internalSend(new MqttDisconnect(reasonCode, disconnectProperties), token);
+				disconnect = new MqttDisconnect(reasonCode, disconnectProperties);
+				internalSend(disconnect, token);
 
 				// Wait util the disconnect packet sent with timeout
 				token.waitForCompletion(disconnectTimeout);
@@ -625,7 +627,7 @@ public class ClientComms {
 		} catch (Exception ex) {
 			// ignore, probably means we failed to send the disconnect packet.
 		} finally {
-			token.internalTok.markComplete(null, null);
+			token.internalTok.markComplete(disconnect, null);
 			shutdownConnection(token, null, null);
 		}
 	}
@@ -846,7 +848,7 @@ public class ClientComms {
 				token.internalTok.waitUntilSent();
 			} catch (MqttException ex) {
 			} finally {
-				token.internalTok.markComplete(null, null);
+				token.internalTok.markComplete(disconnect, null);
 				shutdownConnection(token, null, null);
 			}
 		}
