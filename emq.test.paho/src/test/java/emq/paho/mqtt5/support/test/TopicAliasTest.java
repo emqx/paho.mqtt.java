@@ -7,7 +7,6 @@ import org.eclipse.paho.mqttv5.client.IMqttDeliveryToken;
 import org.eclipse.paho.mqttv5.client.IMqttToken;
 import org.eclipse.paho.mqttv5.client.MqttAsyncClient;
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
-import org.eclipse.paho.mqttv5.client.test.SubscribeTests;
 import org.eclipse.paho.mqttv5.client.test.logging.LoggingUtilities;
 import org.eclipse.paho.mqttv5.common.MqttException;
 import org.eclipse.paho.mqttv5.common.MqttMessage;
@@ -42,7 +41,7 @@ public class TopicAliasTest {
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, SubscribeTests.class, clientId);
+		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
 		String topic = TestHelper.getTopicPrefix() + clientId;
 		
 		EMQMqttV5Receiver mqttV5Receiver = new EMQMqttV5Receiver(clientId, LoggingUtilities.getPrintStream());
@@ -100,7 +99,7 @@ public class TopicAliasTest {
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, SubscribeTests.class, clientId);
+		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
 		String topic = TestHelper.getTopicPrefix() + clientId;
 		
 		EMQMqttV5Receiver mqttV5Receiver = new EMQMqttV5Receiver(clientId, LoggingUtilities.getPrintStream());
@@ -185,7 +184,7 @@ public class TopicAliasTest {
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, SubscribeTests.class, clientId);
+		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
 		String topic = TestHelper.getTopicPrefix() + clientId;
 		
 		EMQMqttV5Receiver mqttV5Receiver = new EMQMqttV5Receiver(clientId, LoggingUtilities.getPrintStream());
@@ -281,7 +280,7 @@ public class TopicAliasTest {
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, SubscribeTests.class, clientId);
+		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
 		String topic = TestHelper.getTopicPrefix() + clientId;
 		
 		EMQMqttV5Receiver mqttV5Receiver = new EMQMqttV5Receiver(clientId, LoggingUtilities.getPrintStream());

@@ -23,6 +23,9 @@ import emq.paho.mqtt5.support.test.utils.EMQMqttV5Receiver.ReceivedMessage;
 import emq.paho.mqtt5.support.test.utils.TestClientUtilities;
 import emq.paho.mqtt5.support.test.utils.Utility;
 
+/*
+ * Finished
+ */
 public class SubscriptionIdTest {
 	
 	private static final Logger log = Logger.getLogger(SubscriptionIdTest.class.getName());
@@ -37,7 +40,7 @@ public class SubscriptionIdTest {
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, SubscribeTests.class, clientId);
+		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
 		String topic1 = clientId + "/" + TestHelper.getTopicPrefix();
 		String topic2 = clientId + "/+"; 
 		
