@@ -26,7 +26,7 @@ public class TestHelper {
 			LoggingUtilities.banner(log, SubscribeTests.class, methodName);
 
 			serverURI = TestProperties.getServerURI();
-			topicPrefix = "BasicTest-" + UUID.randomUUID().toString() + "-";
+			topicPrefix = "EMQTest-" + UUID.randomUUID().toString() + "-";
 		} catch (Exception exception) {
 			log.log(Level.SEVERE, "caught exception:", exception);
 			throw exception;
