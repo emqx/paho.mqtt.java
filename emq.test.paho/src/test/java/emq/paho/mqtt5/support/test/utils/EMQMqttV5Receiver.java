@@ -122,8 +122,16 @@ public class EMQMqttV5Receiver implements MqttCallback {
   private boolean topicMatch(String subTopic, String actualTopic) {
 	  if (subTopic.equals(actualTopic)) {
 		  return true;
-	  }
-	  else if (subTopic.contains("+")) {
+	  } else if (subTopic.startsWith("$share/")) {
+		  String[] segs = subTopic.split("/");
+		  if (segs.length < 3) {
+			  return false;
+		  }
+		  String sharePrefix = segs[0] + "/" + segs[1] + "/";
+		  subTopic = subTopic.substring(sharePrefix.length());
+		  return (subTopic.equals(actualTopic));
+		  
+	  } else if (subTopic.contains("+")) {
 		  String prefix = subTopic.substring(0, subTopic.indexOf("+"));
 		  String surfix = subTopic.substring(subTopic.indexOf("+") + 1);
 		  if (actualTopic.startsWith(prefix)) {
