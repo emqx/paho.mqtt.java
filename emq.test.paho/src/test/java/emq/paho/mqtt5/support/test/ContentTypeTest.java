@@ -58,7 +58,7 @@ public class ContentTypeTest {
 			IMqttToken subscribeToken = subClient.subscribe(subscription);
 			subscribeToken.waitForCompletion(timeout);
 			
-			// Publish many messages
+			// Publish messages
 			String messagePayload = "Test Payload at QoS : " + qos;
 			MqttProperties properties = new MqttProperties();
 			properties.setContentType(contentType);
