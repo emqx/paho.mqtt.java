@@ -1554,11 +1554,11 @@ public class ClientState implements MqttState {
 	}
 	
 	public Long getOutgoingMaximumPacketSize() {
-		return this.mqttConnection.getIncomingMaximumPacketSize();
+		return this.mqttConnection.getOutgoingMaximumPacketSize();
 	}
 	
 	public Long getIncomingMaximumPacketSize() {
-		return this.mqttConnection.getOutgoingMaximumPacketSize();
+		return this.mqttConnection.getIncomingMaximumPacketSize();
 	}
 
 	/**
