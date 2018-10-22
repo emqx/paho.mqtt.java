@@ -37,7 +37,7 @@ private static final Logger log = Logger.getLogger(SubscriptionOptionsTest.class
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
+		LoggingUtilities.banner(log, SubscriptionOptionsTest.class, clientId);
 		String topic = TestHelper.getTopicPrefix() + clientId;
 		
 		EMQMqttV5Receiver mqttV5Receiver = new EMQMqttV5Receiver(clientId, LoggingUtilities.getPrintStream());

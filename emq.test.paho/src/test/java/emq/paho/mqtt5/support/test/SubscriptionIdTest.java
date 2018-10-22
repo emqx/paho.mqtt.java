@@ -40,7 +40,7 @@ public class SubscriptionIdTest {
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
+		LoggingUtilities.banner(log, SubscriptionIdTest.class, clientId);
 		String topic1 = clientId + "/" + TestHelper.getTopicPrefix();
 		String topic2 = clientId + "/+"; 
 		

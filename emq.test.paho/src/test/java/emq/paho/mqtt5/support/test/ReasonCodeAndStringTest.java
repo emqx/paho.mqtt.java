@@ -37,7 +37,7 @@ private static final Logger log = Logger.getLogger(TopicAliasTest.class.getName(
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
+		LoggingUtilities.banner(log, ReasonCodeAndStringTest.class, clientId);
 		
 		String serverURI = TestHelper.getServerURI().toString();
 		MqttAsyncClient asyncClient = new MqttAsyncClient(serverURI, clientId, null);

@@ -3,6 +3,7 @@ package emq.paho.mqtt5.support.test.utils;
 import java.util.logging.Logger;
 
 import org.eclipse.paho.mqttv5.client.IMqttToken;
+import org.eclipse.paho.mqttv5.client.MqttActionListener;
 import org.eclipse.paho.mqttv5.client.MqttAsyncClient;
 import org.eclipse.paho.mqttv5.client.MqttCallback;
 import org.eclipse.paho.mqttv5.client.MqttConnectionOptions;
@@ -17,7 +18,7 @@ public class TestClientUtilities {
 	private static final Logger log = Logger.getLogger(className);
 	
 	public static MqttAsyncClient connectAndGetClient(String serverURI, String clientId, MqttCallback callback,
-			MqttConnectionOptions connectionOptions, int timeout) throws MqttException {
+			MqttConnectionOptions connectionOptions,int timeout) throws MqttException {
 		MqttAsyncClient client = new MqttAsyncClient(serverURI, clientId, null);
 		if (callback != null) {
 			client.setCallback(callback);
@@ -28,6 +29,26 @@ public class TestClientUtilities {
 			connectToken = client.connect(connectionOptions);
 		} else {
 			connectToken = client.connect();
+		}
+
+		connectToken.waitForCompletion(timeout);
+		Assert.assertTrue(client.isConnected());
+		log.info("Client: [" + clientId + "] is connected.");
+		return client;
+	}
+	
+	public static MqttAsyncClient connectAndGetClient(String serverURI, String clientId, MqttCallback callback,
+			MqttConnectionOptions connectionOptions, MqttActionListener actionListener, int timeout) throws MqttException {
+		MqttAsyncClient client = new MqttAsyncClient(serverURI, clientId, null);
+		if (callback != null) {
+			client.setCallback(callback);
+		}
+		log.info("Connecting: [serverURI: " + serverURI + ", ClientId: " + clientId + "]");
+		IMqttToken connectToken;
+		if (connectionOptions != null) {
+			connectToken = client.connect(connectionOptions, null, actionListener);
+		} else {
+			connectToken = client.connect(null, null, actionListener);
 		}
 
 		connectToken.waitForCompletion(timeout);

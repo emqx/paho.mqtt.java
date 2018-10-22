@@ -23,7 +23,7 @@ import emq.paho.mqtt5.support.test.utils.Utility;
  */
 public class SharedSubscriptionTest {
 	
-private static final Logger log = Logger.getLogger(SharedSubscriptionTest.class.getName());
+	private static final Logger log = Logger.getLogger(SharedSubscriptionTest.class.getName());
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -35,7 +35,7 @@ private static final Logger log = Logger.getLogger(SharedSubscriptionTest.class.
 		String clientId = Utility.getMethodName();
 		int timeout = 120 * 1000;
 		
-		LoggingUtilities.banner(log, TopicAliasTest.class, clientId);
+		LoggingUtilities.banner(log, SharedSubscriptionTest.class, clientId);
 		String topic = TestHelper.getTopicPrefix() + clientId;
 		String sharedTopic = "$share/group/" + topic;
 		
@@ -58,7 +58,7 @@ private static final Logger log = Logger.getLogger(SharedSubscriptionTest.class.
 			subscribeToken.waitForCompletion(timeout);
 			
 			// Publish a message to the topic
-			String messagePayload = "Helloworld";
+			String messagePayload = "Test Payload at QoS : " + qos;
 			MqttMessage testMessage = new MqttMessage(messagePayload.getBytes(), qos, false, null);
 			log.info(MessageFormat.format("Publishing Message {0} to: {1} at QoS: {2}", 
 					testMessage.toDebugString(), topic, qos));
